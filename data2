@@ -8,3 +8,12 @@
             }
         };
     }
+
+@Test
+    public void testProcessThrowsException() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            myService.process(null);
+        });
+
+        assertEquals("Input cannot be null", exception.getMessage());
+    }
