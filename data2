@@ -1,56 +1,10 @@
-import com.opencsv.CSVReader;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(MyService.class)
-public class MyServiceTest {
-
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
-
-    @Mock
-    private CSVReader csvReader;
-
-    @Mock
-    private FileReader fileReader;
-
-    @Before
-    public void setUp() throws Exception {
-        // Mock the constructor of FileReader to return the mock fileReader
-        PowerMockito.whenNew(FileReader.class).withArguments(anyString()).thenReturn(fileReader);
-        // Mock the constructor of CSVReader to return the mock csvReader
-        PowerMockito.whenNew(CSVReader.class).withArguments(fileReader).thenReturn(csvReader);
+@BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        myService = new MyService() {
+            @Override
+            protected CSVReader createCsvReader(String filePath) throws IOException {
+                return csvReader; // Return the mock CSVReader
+            }
+        };
     }
-
-    @Test
-    public void testProcessCsv() throws IOException {
-        // Arrange
-        File tempFile = folder.newFile("test.csv");
-        when(csvReader.readNext()).thenReturn(new String[]{"column1", "column2"}, (String[]) null);
-
-        // Act
-        MyService myService = new MyService();
-        myService.processCsv(tempFile.getAbsolutePath());
-
-        // Assert
-        verify(csvReader, times(2)).readNext(); // verify that readNext was called twice
-    }
-}
