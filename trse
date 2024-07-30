@@ -1,0 +1,19 @@
+import org.springframework.data.jpa.domain.Specification;
+
+import javax.persistence.criteria.*;
+
+public class UserSpecifications {
+
+    public static Specification<User> hasCustomColumn(String columnName, String value) {
+        return (root, query, criteriaBuilder) -> {
+            if (!isValidColumnName(columnName)) {
+                return criteriaBuilder.conjunction(); // No results if column is invalid
+            }
+            return criteriaBuilder.equal(root.get(columnName), value);
+        };
+    }
+
+    private static boolean isValidColumnName(String columnName) {
+        return columnName.equals("username") || columnName.equals("email");
+    }
+}
