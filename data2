@@ -1,63 +1,13 @@
-Source schemaSource = new StreamSource(ValidationHelper.class.getResourceAsStream(resourceDir), ValidationHelper.class.getResource(resourceDir).toString());
-
-public class FileFactory {
-    public File createFile(String path) {
-        return new File(path);
-    }
-}
+mkdir ~/.npm-global
+npm config set prefix '~/.npm-global'
 
 
-public class FileProcessor {
-    private final FileFactory fileFactory;
+export PATH=~/.npm-global/bin:$PATH
 
-    public FileProcessor(FileFactory fileFactory) {
-        this.fileFactory = fileFactory;
-    }
+source ~/.bashrc
+# or
+source ~/.bash_profile
+# or
+source ~/.zshrc
 
-    public boolean processFile(String path) {
-        File file = fileFactory.createFile(path);
-        // Process the file (e.g., check if it exists)
-        return file.exists();
-    }
-}
-
-
-
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import java.io.File;
-
-public class FileProcessorTest {
-    
-    private FileFactory fileFactory;
-    private FileProcessor fileProcessor;
-
-    @BeforeEach
-    public void setUp() {
-        fileFactory = mock(FileFactory.class);
-        fileProcessor = new FileProcessor(fileFactory);
-    }
-
-    @Test
-    public void testProcessFile() {
-        // Given
-        String filePath = "mocked/path/to/file.txt";
-        File mockedFile = mock(File.class);
-
-        when(fileFactory.createFile(filePath)).thenReturn(mockedFile);
-        when(mockedFile.exists()).thenReturn(true);
-
-        // When
-        boolean result = fileProcessor.processFile(filePath);
-
-        // Then
-        assertTrue(result);
-        verify(fileFactory, times(1)).createFile(filePath);
-        verify(mockedFile, times(1)).exists();
-    }
-}
-
-f.exists() && f.isDirectory()
+npx create-react-app hello-world
