@@ -1,13 +1,23 @@
-mkdir ~/.npm-global
-npm config set prefix '~/.npm-global'
+import React, { useEffect, useState } from 'react';
+import './App.css';
 
+function App() {
+  const [message, setMessage] = useState('');
 
-export PATH=~/.npm-global/bin:$PATH
+  useEffect(() => {
+    fetch('/api/message')
+      .then(response => response.text())
+      .then(data => setMessage(data));
+  }, []);
 
-source ~/.bashrc
-# or
-source ~/.bash_profile
-# or
-source ~/.zshrc
+  return (
+    <div className="App">
+      <header className="App-header">
+        <p>{message}</p>
+      </header>
+    </div>
+  );
+}
 
-npx create-react-app hello-world
+export default App;
+
