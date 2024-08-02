@@ -1,23 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import './App.css';
+const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-function App() {
-  const [message, setMessage] = useState('');
+  // Handle form submit
+  const handleSubmit = (event) => {
+    event.preventDefault();
 
-  useEffect(() => {
-    fetch('/api/message')
+    fetch('/api/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    })
       .then(response => response.text())
-      .then(data => setMessage(data));
-  }, []);
-
-  return (
-    <div className="App">
-      <header className="App-header">
-        <p>{message}</p>
-      </header>
-    </div>
-  );
-}
-
-export default App;
+      .then(data => console.log('Success:', data))
+      .catch(error => console.error('Error:', error));
+  };
 
