@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 
 function App() {
@@ -7,7 +7,6 @@ function App() {
   const [products, setProducts] = useState([]);
   const [formData, setFormData] = useState({ name: '', email: '' });
 
-  // Fetch data when the component mounts
   useEffect(() => {
     fetch('/api/message')
       .then(response => response.text())
@@ -25,15 +24,14 @@ function App() {
       .catch(error => console.error('Error fetching products:', error));
   }, []);
 
-  // Handle form input change
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // Handle form submit
   const handleSubmit = (event) => {
     event.preventDefault();
+    console.log('Submitting form with data:', formData); // Debug log
 
     fetch('/api/submit', {
       method: 'POST',
@@ -43,8 +41,14 @@ function App() {
       body: JSON.stringify(formData),
     })
       .then(response => response.text())
-      .then(data => console.log('Success:', data))
-      .catch(error => console.error('Error:', error));
+      .then(data => {
+        console.log('Success:', data); // Debug log
+        alert('Form submitted successfully: ' + data); // User feedback
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error submitting form: ' + error); // User feedback
+      });
   };
 
   return (
