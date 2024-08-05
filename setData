@@ -1,0 +1,57 @@
+// TableComponent.js
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+
+const TableComponent = () => {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/entities');
+                setData(response.data);
+                setLoading(false);
+            } catch (error) {
+                setError(error);
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error fetching data: {error.message}</div>;
+
+    return (
+        <div>
+            <h1>Data Table</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Column 1</th>
+                        <th>Column 2</th>
+                        {/* Add headers for all 100 columns */}
+                        <th>Column 100</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {data.map((item) => (
+                        <tr key={item.id}>
+                            <td>{item.id}</td>
+                            <td>{item.column1}</td>
+                            <td>{item.column2}</td>
+                            {/* Add values for all 100 columns */}
+                            <td>{item.column100}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
+};
+
+export default TableComponent;
