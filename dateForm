@@ -1,0 +1,40 @@
+import React, { useState, useEffect } from 'react';
+
+const DateForm = () => {
+  const [selectedDate, setSelectedDate] = useState('');
+
+  useEffect(() => {
+    // Function to set today's date
+    const setTodayDate = () => {
+      const today = new Date(); // Get today's date
+      const formattedDate = today.toISOString().split('T')[0]; // Format to YYYY-MM-DD
+      setSelectedDate(formattedDate); // Set the formatted date in the state
+    };
+
+    setTodayDate(); // Call the function to set the date
+  }, []); // Empty dependency array ensures this runs only once
+
+  const handleChange = (event) => {
+    setSelectedDate(event.target.value); // Update the state with the selected date
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault(); // Prevent the default form submission
+    console.log('Selected Date:', selectedDate); // Do something with the selected date
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <label htmlFor="date">Select Date:</label>
+      <input 
+        type="date" 
+        id="date" 
+        value={selectedDate} 
+        onChange={handleChange} 
+      />
+      <button type="submit">Submit</button>
+    </form>
+  );
+};
+
+export default DateForm;
