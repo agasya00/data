@@ -1,0 +1,69 @@
+// FormComponent.js
+import React, { useState } from 'react';
+
+const FormComponent = () => {
+    const [formData, setFormData] = useState({
+        name: '',
+        email: ''
+    });
+
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setFormData({
+            ...formData,
+            [name]: value
+        });
+    };
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        // Construct the query string
+        const queryString = new URLSearchParams(formData).toString();
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/submit?${queryString}`, {
+                method: 'GET' // Set the request method to GET
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+
+            const result = await response.text(); // Parse the response as text
+            alert(result); // Display the response message
+        } catch (error) {
+            console.error('There was an error submitting the form!', error);
+        }
+    };
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <div>
+                <label>
+                    Name:
+                    <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                    />
+                </label>
+            </div>
+            <div>
+                <label>
+                    Email:
+                    <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                    />
+                </label>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    );
+};
+
+export default FormComponent;
