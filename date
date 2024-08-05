@@ -1,0 +1,4 @@
+var curr = new Date();
+curr.setDate(curr.getDate() + 3);
+var date = curr.toISOString().substring(0,10);
+<input id="dateRequired" type="date" name="dateRequired" defaultValue={date} /> 
