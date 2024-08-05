@@ -1,0 +1,76 @@
+import React, { useEffect, useState } from 'react';
+
+const App = () => {
+  const [name, setName] = useState('');
+  const [responseData, setResponseData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Send the name to the Spring Boot API
+      const response = await fetch('http://localhost:8080/api/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name }), // Sending the name as JSON
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const result = await response.json();
+      setResponseData(result); // Assume result contains the relevant data
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // You can use useEffect to fetch additional data if necessary
+  useEffect(() => {
+    if (responseData) {
+      // Fetch related data based on the response from the submission
+      const fetchRelatedData = async () => {
+        try {
+          const response = await fetch(`http://localhost:8080/api/related/${responseData.id}`); // Use an id or relevant identifier from responseData
+          const result = await response.json();
+          console.log('Related Data:', result);
+        } catch (err) {
+          console.error('Error fetching related data:', err);
+        }
+      };
+
+      fetchRelatedData();
+    }
+  }, [responseData]); // Runs when responseData changes
+
+  return (
+    <div>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Enter your name"
+          required
+        />
+        <button type="submit" disabled={loading}>
+          {loading ? 'Submitting...' : 'Submit'}
+        </button>
+      </form>
+
+      {error && <div>Error: {error}</div>}
+      {responseData && <div>Response: {JSON.stringify(responseData)}</div>}
+    </div>
+  );
+};
+
+export default App;
