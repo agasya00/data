@@ -1,0 +1,62 @@
+// TableComponent.js
+import React, { useEffect, useState } from 'react';
+
+const TableComponent = () => {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch('http://localhost:8080/api/entities'); // Adjust the URL accordingly
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const result = await response.json();
+                setData(result);
+                setLoading(false);
+            } catch (error) {
+                setError(error);
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error fetching data: {error.message}</div>;
+
+    // Check if data is empty
+    if (data.length === 0) return <div>No data available.</div>;
+
+    // Get columns dynamically from the keys of the first object
+    const columns = Object.keys(data[0]);
+
+    return (
+        <div>
+            <h1>Data Table</h1>
+            <table>
+                <thead>
+                    <tr>
+                        {columns.map((column) => (
+                            <th key={column}>{column}</th>
+                        ))}
+                    </tr>
+                </thead>
+                <tbody>
+                    {data.map((item) => (
+                        <tr key={item.id}>
+                            {columns.map((column) => (
+                                <td key={column}>{item[column]}</td>
+                            ))}
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
+};
+
+export default TableComponent;
