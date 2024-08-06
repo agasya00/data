@@ -1,0 +1,35 @@
+// ParentComponent.js
+import React, { useState, useEffect } from 'react';
+import Table from './Table'; // Make sure to import your Table component
+
+const ParentComponent = () => {
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch('https://api.example.com/data'); // Replace with your API URL
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const jsonData = await response.json();
+                setData(jsonData); // Assuming jsonData is an array
+            } catch (error) {
+                setError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
+
+    return <Table data={data} />;
+};
+
+export default ParentComponent;
