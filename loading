@@ -1,0 +1,51 @@
+import React, { useState, useEffect } from 'react';
+
+const RecordList = () => {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true); // Set loading to true before fetching data
+        const response = await fetch('your-api-url'); // Replace with your API URL
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const result = await response.json();
+        setData(result); // Assuming the API returns an array
+      } catch (err) {
+        setError(err.message); // Set error message if there is an error
+      } finally {
+        setLoading(false); // Set loading to false after the fetch operation
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <p>Loading...</p>; // Render loading message while fetching data
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>; // Render error message if an error occurs
+  }
+
+  return (
+    <div>
+      {data.length === 0 ? (
+        <p>No record exists</p> // Render message if no records found
+      ) : (
+        <ul>
+          {data.map((item) => (
+            <li key={item.id}>{item.name}</li> // Adjust based on your data structure
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
+export default RecordList;
